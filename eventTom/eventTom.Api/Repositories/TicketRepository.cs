@@ -1,7 +1,8 @@
-﻿using eventTom.Api.Models.dataContext;
+﻿using Microsoft.EntityFrameworkCore;
+
+using eventTom.Api.Models.dataContext;
 using eventTom.Api.Models;
 using eventTom.Api.Repositories.interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace eventTom.Api.Repositories
 {
@@ -14,27 +15,22 @@ namespace eventTom.Api.Repositories
             _context = context;
         }
 
-        public async Task<Ticket> GetByIdAsync(long id)
+        public async Task<Ticket> GetByIdAsync(int id)
         {
-            return await _context.Tickets
-                .Include(t => t.Event)
-                .Include(t => t.Customer)
-                .FirstOrDefaultAsync(t => t.TicketId == id);
+            return await _context.Tickets.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Ticket>> GetByCustomerIdAsync(long customerId)
+        public async Task<IEnumerable<Ticket>> GetByEventIdAsync(int eventId)
         {
             return await _context.Tickets
-                .Include(t => t.Event)
-                .Where(t => t.CustomerId == customerId)
+                .Where(t => t.EventId == eventId)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Ticket>> GetByEventIdAsync(long eventId)
+        public async Task<IEnumerable<Ticket>> GetByCustomerIdAsync(int customerId)
         {
             return await _context.Tickets
-                .Include(t => t.Customer)
-                .Where(t => t.EventId == eventId)
+                .Where(t => t.CustomerId == customerId)
                 .ToListAsync();
         }
     }

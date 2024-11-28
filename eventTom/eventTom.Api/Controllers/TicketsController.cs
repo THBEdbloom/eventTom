@@ -1,46 +1,45 @@
-﻿using eventTom.Api.Services.interfaces;
+﻿using eventTom.Api.DTO;
+using eventTom.Api.Services.interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eventTom.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class TicketsController : ControllerBase
+    [ApiController]
+    public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
 
-        public TicketsController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService)
         {
             _ticketService = ticketService;
         }
 
-        [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetTicketById(long id)
+        // GET: api/Ticket/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TicketDTO>> GetTicketById(int id)
         {
-            var ticket = await _ticketService.GetTicketByIdAsync(id);
-            if (ticket == null)
+            var ticketDTO = await _ticketService.GetByIdAsync(id);
+            if (ticketDTO == null)
+            {
                 return NotFound();
-
-            return Ok(ticket);
+            }
+            return Ok(ticketDTO);
         }
 
-        [HttpGet("customer/{customerId:long}")]
-        public async Task<IActionResult> GetTicketsByCustomer(long customerId)
+        // GET: api/Ticket/Event/5
+        [HttpGet("Event/{eventId}")]
+        public async Task<ActionResult<IEnumerable<TicketDTO>>> GetTicketsByEventId(int eventId)
         {
-            var tickets = await _ticketService.GetTicketsByCustomerAsync(customerId);
+            var tickets = await _ticketService.GetByEventIdAsync(eventId);
             return Ok(tickets);
         }
 
-        [HttpGet("event/{eventId:long}")]
-        public async Task<IActionResult> GetTicketsByEvent(long eventId)
+        // GET: api/Ticket/Customer/5
+        [HttpGet("Customer/{customerId}")]
+        public async Task<ActionResult<IEnumerable<TicketDTO>>> GetTicketsByCustomerId(int customerId)
         {
-            var tickets = await _ticketService.GetTicketsByEventAsync(eventId);
-
-            if (tickets == null || tickets.Count() == 0)
-            {
-                return NotFound($"No tickets found for event with ID {eventId}");
-            }
-
+            var tickets = await _ticketService.GetByCustomerIdAsync(customerId);
             return Ok(tickets);
         }
     }

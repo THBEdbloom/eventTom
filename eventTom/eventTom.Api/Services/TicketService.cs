@@ -1,5 +1,4 @@
 ﻿using eventTom.Api.DTO;
-using eventTom.Api.Models;
 using eventTom.Api.Repositories.interfaces;
 using eventTom.Api.Services.interfaces;
 
@@ -8,54 +7,57 @@ namespace eventTom.Api.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
-        private readonly IEventRepository _eventRepository;
-        private readonly ICustomerRepository _customerRepository;
 
-        public TicketService(
-            ITicketRepository ticketRepository,
-            IEventRepository eventRepository,
-            ICustomerRepository customerRepository)
+        public TicketService(ITicketRepository ticketRepository)
         {
             _ticketRepository = ticketRepository;
-            _eventRepository = eventRepository;
-            _customerRepository = customerRepository;
         }
 
-        public async Task<TicketDTO> GetTicketByIdAsync(long id)
-        {
-            var ticket = await _ticketRepository.GetByIdAsync(id);
-            if (ticket == null)
-                return null;
-
-            return ToDTO(ticket);
-        }
-
-        public async Task<IEnumerable<TicketDTO>> GetTicketsByCustomerAsync(long customerId)
-        {
-            var tickets = await _ticketRepository.GetByCustomerIdAsync(customerId);
-            return tickets.Select(ToDTO);
-        }
-
-        public async Task<IEnumerable<TicketDTO>> GetTicketsByEventAsync(long eventId)
+        // Get All Tickets for a specific Event
+        public async Task<IEnumerable<TicketDTO>> GetByEventIdAsync(int eventId)
         {
             var tickets = await _ticketRepository.GetByEventIdAsync(eventId);
-            return tickets.Select(ToDTO);
+            return tickets.Select(t => new TicketDTO
+            {
+                TicketId = t.TicketId,
+                FinalPrice = t.FinalPrice,
+                PurchaseDate = t.PurchaseDate,
+                Used = t.Used,
+                EventId = t.EventId,
+                CustomerId = t.CustomerId
+            });
         }
 
-        private TicketDTO ToDTO(Ticket ticket)
+        // Get Ticket by Id
+        public async Task<TicketDTO> GetByIdAsync(int id)
         {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+            if (ticket == null) return null;
+
             return new TicketDTO
             {
                 TicketId = ticket.TicketId,
-                EventTitle = ticket.Event?.Title ?? "Unknown Event",
-                OwnerName = ticket.Customer != null
-                    ? $"{ticket.Customer.FirstName} {ticket.Customer.LastName}"
-                    : "Unknown Customer",
                 FinalPrice = ticket.FinalPrice,
                 PurchaseDate = ticket.PurchaseDate,
-                TicketNumber = ticket.TicketNumber
+                Used = ticket.Used,
+                EventId = ticket.EventId,
+                CustomerId = ticket.CustomerId
             };
         }
-    }
 
+        // Get All Tickets for a specific Customer
+        public async Task<IEnumerable<TicketDTO>> GetByCustomerIdAsync(int customerId)
+        {
+            var tickets = await _ticketRepository.GetByCustomerIdAsync(customerId);
+            return tickets.Select(t => new TicketDTO
+            {
+                TicketId = t.TicketId,
+                FinalPrice = t.FinalPrice,
+                PurchaseDate = t.PurchaseDate,
+                Used = t.Used,
+                EventId = t.EventId,
+                CustomerId = t.CustomerId
+            });
+        }
+    }
 }

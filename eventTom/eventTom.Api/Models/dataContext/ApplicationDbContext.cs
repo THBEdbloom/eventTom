@@ -9,7 +9,7 @@ namespace eventTom.Api.Models.dataContext
         public DbSet<Event> Events { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-
         public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

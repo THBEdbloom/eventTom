@@ -1,34 +1,38 @@
-﻿using eventTom.Api.Services.interfaces;
+﻿using eventTom.Api.DTO;
+using eventTom.Api.Services.interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eventTom.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class CustomersController : ControllerBase
+    [ApiController]
+    public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
 
-        public CustomersController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllCustomers()
+        // GET: api/Customer/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CustomerDTO>> GetCustomerById(int id)
         {
-            var customers = await _customerService.GetAllCustomersAsync();
-            return Ok(customers);
+            var customerDTO = await _customerService.GetByIdAsync(id);
+            if (customerDTO == null)
+            {
+                return NotFound();
+            }
+            return Ok(customerDTO);
         }
 
-        [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetCustomerById(long id)
+        // GET: api/Customer
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
         {
-            var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null)
-                return NotFound();
-
-            return Ok(customer);
+            var customers = await _customerService.GetAllAsync();
+            return Ok(customers);
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using eventTom.Api.Models.dataContext;
+﻿using Microsoft.EntityFrameworkCore;
+
+using eventTom.Api.Models.dataContext;
 using eventTom.Api.Models;
 using eventTom.Api.Repositories.interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace eventTom.Api.Repositories
 {
@@ -14,20 +15,14 @@ namespace eventTom.Api.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Customer>> GetAllAsync()
+        public async Task<Customer> GetByIdAsync(int id)
         {
-            return await _context.Customers
-                .Include(c => c.Vouchers)
-                .Include(c => c.Tickets)
-                .ToListAsync();
+            return await _context.Customers.FindAsync(id);
         }
 
-        public async Task<Customer> GetByIdAsync(long id)
+        public async Task<IEnumerable<Customer>> GetAllAsync()
         {
-            return await _context.Customers
-                .Include(c => c.Vouchers)
-                .Include(c => c.Tickets)
-                .FirstOrDefaultAsync(c => c.CustomerId == id);
+            return await _context.Customers.ToListAsync();
         }
     }
 }

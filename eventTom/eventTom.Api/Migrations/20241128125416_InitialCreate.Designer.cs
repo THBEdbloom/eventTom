@@ -12,8 +12,8 @@ using eventTom.Api.Models.dataContext;
 namespace eventTom.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241126102516_FirstCreate")]
-    partial class FirstCreate
+    [Migration("20241128125416_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,43 +27,60 @@ namespace eventTom.Api.Migrations
 
             modelBuilder.Entity("eventTom.Api.Models.Customer", b =>
                 {
-                    b.Property<long>("CustomerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CustomerId");
+                    b.HasKey("Id");
 
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("eventTom.Api.Models.Employee", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmployeeId");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("eventTom.Api.Models.Event", b =>
                 {
-                    b.Property<long>("EventId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("BasePrice")
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("EventId"));
-
-                    b.Property<double>("BasePrice")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -71,8 +88,8 @@ namespace eventTom.Api.Migrations
                     b.Property<int>("SoldTickets")
                         .HasColumnType("int");
 
-                    b.Property<int>("ThresholdValue")
-                        .HasColumnType("int");
+                    b.Property<long>("ThresholdValue")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -81,34 +98,30 @@ namespace eventTom.Api.Migrations
                     b.Property<int>("TotalTickets")
                         .HasColumnType("int");
 
-                    b.HasKey("EventId");
+                    b.HasKey("Id");
 
                     b.ToTable("Events");
                 });
 
             modelBuilder.Entity("eventTom.Api.Models.Ticket", b =>
                 {
-                    b.Property<long>("TicketId")
+                    b.Property<int>("TicketId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("FinalPrice")
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TicketId"));
-
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EventId")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("FinalPrice")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("TicketNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Used")
                         .HasColumnType("bit");
@@ -124,17 +137,17 @@ namespace eventTom.Api.Migrations
 
             modelBuilder.Entity("eventTom.Api.Models.Voucher", b =>
                 {
-                    b.Property<long>("VoucherId")
+                    b.Property<int>("VoucherId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherId"));
+
+                    b.Property<long>("Amount")
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("VoucherId"));
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ValidUntil")
                         .HasColumnType("datetime2");
@@ -155,7 +168,7 @@ namespace eventTom.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("eventTom.Api.Models.Event", "Event")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -181,6 +194,11 @@ namespace eventTom.Api.Migrations
                     b.Navigation("Tickets");
 
                     b.Navigation("Vouchers");
+                });
+
+            modelBuilder.Entity("eventTom.Api.Models.Event", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

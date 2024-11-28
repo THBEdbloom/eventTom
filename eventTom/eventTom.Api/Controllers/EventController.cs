@@ -1,35 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using eventTom.Api.Services.interfaces;
+using eventTom.Api.DTO;
 
 namespace eventTom.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class EventsController : ControllerBase
+    [ApiController]
+    public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
 
-        public EventsController(IEventService eventService)
+        public EventController(IEventService eventService)
         {
             _eventService = eventService;
         }
 
+        // GET: api/Event
         [HttpGet]
-        public async Task<IActionResult> GetAllEvents()
+        public async Task<ActionResult<IEnumerable<EventDTO>>> GetAllEvents()
         {
-            var events = await _eventService.GetAllEventsAsync();
+            var events = await _eventService.GetAllAsync();
             return Ok(events);
         }
 
-        [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetEventById(long id)
+        // GET: api/Event/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EventDTO>> GetEventById(int id)
         {
-            var eventDto = await _eventService.GetEventByIdAsync(id);
-            if (eventDto == null)
+            var eventDTO = await _eventService.GetByIdAsync(id);
+            if (eventDTO == null)
+            {
                 return NotFound();
-
-            return Ok(eventDto);
+            }
+            return Ok(eventDTO);
         }
     }
 }

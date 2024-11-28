@@ -14,11 +14,15 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IVoucherService, VoucherService>();
 
 // Add repositories to the container.
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository> ();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));

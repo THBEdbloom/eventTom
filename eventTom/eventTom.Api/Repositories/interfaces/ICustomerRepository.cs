@@ -4,8 +4,7 @@ namespace eventTom.Api.Repositories.interfaces
 {
     public interface ICustomerRepository
     {
-        Task<IEnumerable<Customer>> GetAllAsync();
-        Task<Customer> GetByIdAsync(long id);
+        Task<Customer> GetByIdAsync(int id);              // Kunden anhand der ID suchen
+        Task<IEnumerable<Customer>> GetAllAsync();        // Alle Kunden abrufen
     }
-
 }

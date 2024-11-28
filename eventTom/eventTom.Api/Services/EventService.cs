@@ -1,5 +1,4 @@
 ﻿using eventTom.Api.DTO;
-using eventTom.Api.Models;
 using eventTom.Api.Repositories.interfaces;
 using eventTom.Api.Services.interfaces;
 
@@ -14,28 +13,36 @@ namespace eventTom.Api.Services
             _eventRepository = eventRepository;
         }
 
-        public async Task<IEnumerable<EventDTO>> GetAllEventsAsync()
+        public async Task<IEnumerable<EventDTO>> GetAllAsync()
         {
             var events = await _eventRepository.GetAllAsync();
-            return events.Select(ToDTO);
+            return events.Select(e => new EventDTO
+            {
+                Id = e.Id,
+                Title = e.Title,
+                Date = e.Date,
+                TotalTickets = e.TotalTickets,
+                SoldTickets = e.SoldTickets,
+                ThresholdValue = e.ThresholdValue,
+                BasePrice = e.BasePrice
+            });
         }
 
-        public async Task<EventDTO> GetEventByIdAsync(long id)
+        public async Task<EventDTO> GetByIdAsync(int id)
         {
             var eventEntity = await _eventRepository.GetByIdAsync(id);
-            return eventEntity == null ? null : ToDTO(eventEntity);
-        }
+            if (eventEntity == null) return null;
 
-        private EventDTO ToDTO(Event eventEntity)
-        {
             return new EventDTO
             {
-                EventId = eventEntity.EventId,
+                Id = eventEntity.Id,
                 Title = eventEntity.Title,
-                AvailableTickets = eventEntity.TotalTickets - eventEntity.SoldTickets,
-                Price = eventEntity.BasePrice
+                Date = eventEntity.Date,
+                TotalTickets = eventEntity.TotalTickets,
+                SoldTickets = eventEntity.SoldTickets,
+                ThresholdValue = eventEntity.ThresholdValue,
+                BasePrice = eventEntity.BasePrice
             };
         }
     }
-
 }

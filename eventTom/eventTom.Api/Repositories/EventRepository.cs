@@ -1,8 +1,8 @@
-﻿using eventTom.Api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+using eventTom.Api.Models;
 using eventTom.Api.Models.dataContext;
 using eventTom.Api.Repositories.interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace eventTom.Api.Repositories
 {
@@ -15,7 +15,7 @@ namespace eventTom.Api.Repositories
             _context = context;
         }
 
-        public async Task<Event> GetByIdAsync(long id)
+        public async Task<Event> GetByIdAsync(int id)
         {
             return await _context.Events.FindAsync(id);
         }

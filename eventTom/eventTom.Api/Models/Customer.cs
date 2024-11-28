@@ -2,15 +2,10 @@
 {
     public class Customer
     {
-        public long CustomerId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-
-        // Navigation Properties
-        public ICollection<Voucher> Vouchers { get; set; } = new List<Voucher>();
-        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public int Id { get; set; }              // Eindeutige Kunden-ID
+        public string Name { get; set; }         // Name des Kunden
+        public string Email { get; set; }        // E-Mail-Adresse des Kunden
+        public List<Voucher> Vouchers { get; set; } = new List<Voucher>();  // Liste von Gutscheinen des Kunden
+        public List<Ticket> Tickets { get; set; } = new List<Ticket>();     // Liste von Tickets, die der Kunde gekauft hat
     }
-
 }
